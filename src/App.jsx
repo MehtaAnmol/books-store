@@ -1,28 +1,33 @@
-import { useState, useEffect } from 'react'
-import fetchData from './Data/fetchData';
+
+import { Link, Outlet } from 'react-router-dom';
+import { useFetchBooks } from './Data/useFetchBooks';
 
 
-function App(){
-  const [booksData, setBooksData] = useState(null);
-  const [book1] = booksData;
-  
-  useEffect(() => {
-    async function books(){
-      const books = await fetchData();
-      setBooksData([...books]);
-    }
-    books()
-  }, [])
-  
+export default function App(){
+  const {booksData, loading, error} = useFetchBooks;
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
   return(
     <>
-      {booksData && <p>{book1.author}</p>}
-      <h3>hello</h3>
+      {booksData ? <Display booksData = {booksData}/> : <p>nothing to see here</p>}
     </>
   )
 }
 
-
-export default App
+function Display({booksData}){
+  const [book1] = booksData;
+  return(
+    <>
+     <p>{book1.title}</p>
+      <h3>hello</h3>
+      <Link to = '/'>Home</Link>
+      <Link to = 'about'>About</Link>
+      <Outlet/>
+    </>
+  )
+}
