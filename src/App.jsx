@@ -1,33 +1,27 @@
+import { useContext } from 'react';
+import { BooksContext } from './Data/bookcontext';
 
-import { Link, Outlet } from 'react-router-dom';
-import { useFetchBooks } from './Data/useFetchBooks';
+function App() {
+  const { booksData, loading, error } = useContext(BooksContext);
 
-
-export default function App(){
-  const {booksData, loading, error} = useFetchBooks;
   if (loading) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return <div>Error: {error}</div>;
   }
-  return(
-    <>
-      {booksData ? <Display booksData = {booksData}/> : <p>nothing to see here</p>}
-    </>
-  )
+
+  return (
+    <div>
+      <h1>Books List</h1>
+      <ul>
+        {booksData.map((book) => (
+          <li key={book.id}>{book.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-function Display({booksData}){
-  const [book1] = booksData;
-  return(
-    <>
-     <p>{book1.title}</p>
-      <h3>hello</h3>
-      <Link to = '/'>Home</Link>
-      <Link to = 'about'>About</Link>
-      <Outlet/>
-    </>
-  )
-}
+export default App;
